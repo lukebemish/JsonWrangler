@@ -1,0 +1,77 @@
+plugins {
+    alias libs.plugins.mdg
+    alias libs.plugins.quilt.loom apply false
+}
+
+modsDotGroovy {
+    dslVersion = '1.3.0'
+    platform 'multiloader'
+}
+
+subprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'maven-publish'
+
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    java.withSourcesJar()
+
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'TheModdingInquisition'
+            url = 'https://maven.moddinginquisition.org/releases'
+        }
+        maven {
+            url "https://maven.lukebemish.dev/releases"
+        }
+        maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
+        maven { url = "https://jitpack.io" }
+        // TODO: Publish stuff and remove this
+        mavenLocal()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = 'UTF-8'
+        it.options.release = 17
+    }
+    tasks.withType(GroovyCompile).configureEach {
+        it.groovyOptions.fork = true
+        it.groovyOptions.encoding = 'UTF-8'
+        it.groovyOptions.optimizationOptions.indy = true
+        it.groovyOptions.optimizationOptions.groovydoc = true
+        it.groovyOptions.javaAnnotationProcessing = true
+        //it.groovyOptions.keepStubs = true // for debugging
+        it.groovyOptions.configurationScript = rootProject.file('compile.groovy')
+        it.exclude('mods.groovy')
+    }
+
+    tasks.compileGroovy { t ->
+        t.options.compilerArgs += [
+                "-Aautoextension.name=${mod_name}",
+                "-Aautoextension.version=${version}"
+        ]
+    }
+
+    // Disables Gradle's custom module metadata from being published to maven. The
+    // metadata includes mapped dependencies which are not reasonably consumable by
+    // other mod developers.
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
+
+    configurations {
+        testCompileOnly.extendsFrom(compileOnly)
+    }
+
+    dependencies {
+        compileOnly libs.groovy.core
+
+        annotationProcessor libs.autoextension
+        annotationProcessor libs.autoservice
+        compileOnly libs.autoextension
+        compileOnly libs.autoservice
+    }
+}

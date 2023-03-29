@@ -1,0 +1,106 @@
+plugins {
+    id 'idea'
+}
+
+apply plugin: libs.plugins.quilt.loom.get().pluginId
+
+archivesBaseName = "${mod_id}-${libs.versions.minecraft.get()}-quilt"
+
+sourceSets {
+    test {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+}
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName("Quilt Client")
+            ideConfigGenerated(true)
+            runDir("run")
+            source sourceSets.test
+        }
+        server {
+            server()
+            setConfigName("Quilt Server")
+            ideConfigGenerated(true)
+            runDir("run")
+            source sourceSets.test
+        }
+    }
+}
+
+configurations {
+    instrumentedJars {
+        canBeConsumed = true
+        canBeResolved = false
+    }
+}
+
+artifacts {
+    instrumentedJars(jar)
+}
+
+dependencies {
+    minecraft libs.minecraft
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.minecraft.get()}:${libs.versions.parchment.mappings.get()}@zip")
+    }
+
+    modImplementation libs.quilt.loader
+
+    modImplementation libs.qfapi
+
+    include(implementation(annotationProcessor(libs.mixinextras.quilt.get())))
+
+    modImplementation(libs.cgl.quilt)
+
+    runtimeOnly(libs.groovyduvet.groovy)
+    modImplementation(libs.groovyduvet.all)
+
+    compileOnly(project(path: ":Common", configuration: "namedElements")) {
+        exclude group: 'org.quiltmc'
+    }
+}
+
+tasks.withType(GroovyCompile) {
+    source project(":Common").sourceSets.main.allGroovy
+}
+
+tasks.withType(JavaCompile) {
+    source project(":Common").sourceSets.main.allJava
+}
+
+compileTestGroovy {
+    source sourceSets.main.allGroovy
+    source project(":Common").sourceSets.test.allGroovy
+}
+
+compileTestJava {
+    source sourceSets.main.allJava
+    source project(":Common").sourceSets.test.allJava
+}
+
+processResources {
+    from project(':Common').sourceSets.main.resources
+    exclude 'mods.groovy'
+}
+
+processTestResources {
+    from sourceSets.main.resources
+    from project(':Common').sourceSets.test.resources
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = project.group
+            artifactId = "${mod_id}-${libs.versions.minecraft.get()}-quilt"
+            version = project.version
+            from components.java
+        }
+    }
+}

@@ -1,0 +1,64 @@
+apply plugin: libs.plugins.quilt.loom.get().pluginId
+
+archivesBaseName = "${mod_id}-${libs.versions.minecraft.get()}"
+
+loom {
+    runConfigs.configureEach {
+        ideConfigGenerated = false
+    }
+}
+
+configurations {
+    testOut
+}
+
+dependencies {
+    minecraft libs.minecraft
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.minecraft.get()}:${libs.versions.parchment.mappings.get()}@zip")
+    }
+
+    //DO NOT USE IN PROJECT
+    //Provides necessary stuff for project to compile
+    modCompileOnly libs.quilt.loader
+
+    modCompileOnly libs.cgl.common
+
+    implementation libs.mixinextras.common
+
+    testOut sourceSets.test.output
+}
+
+import net.fabricmc.loom.task.AbstractRemapJarTask
+tasks.withType(AbstractRemapJarTask).each {
+    it.targetNamespace = "named"
+}
+
+groovydoc {
+    exclude 'mods.groovy'
+    use = true
+    docTitle = "${mod_name} v${version}"
+}
+
+tasks.register('groovydocJar', Jar) {
+    it.classifier 'javadoc'
+    it.from groovydoc.destinationDir
+    it.dependsOn(groovydoc)
+}
+
+processResources {
+    exclude 'mods.groovy'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = project.group
+            artifactId = "${mod_id}-${libs.versions.minecraft.get()}"
+            version = project.version
+            from components.java
+            artifact groovydocJar
+        }
+    }
+}
