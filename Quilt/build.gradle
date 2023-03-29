@@ -7,7 +7,7 @@ apply plugin: libs.plugins.quilt.loom.get().pluginId
 archivesBaseName = "${mod_id}-${libs.versions.minecraft.get()}-quilt"
 
 sourceSets {
-    test {
+    testmod {
         compileClasspath += sourceSets.main.compileClasspath
         runtimeClasspath += sourceSets.main.runtimeClasspath
     }
@@ -20,27 +20,16 @@ loom {
             setConfigName("Quilt Client")
             ideConfigGenerated(true)
             runDir("run")
-            source sourceSets.test
+            source sourceSets.testmod
         }
         server {
             server()
             setConfigName("Quilt Server")
             ideConfigGenerated(true)
             runDir("run")
-            source sourceSets.test
+            source sourceSets.testmod
         }
     }
-}
-
-configurations {
-    instrumentedJars {
-        canBeConsumed = true
-        canBeResolved = false
-    }
-}
-
-artifacts {
-    instrumentedJars(jar)
 }
 
 dependencies {
@@ -64,24 +53,15 @@ dependencies {
     compileOnly(project(path: ":Common", configuration: "namedElements")) {
         exclude group: 'org.quiltmc'
     }
+    testmodImplementation sourceSets.main.output
 }
 
-tasks.withType(GroovyCompile) {
+compileGroovy {
     source project(":Common").sourceSets.main.allGroovy
 }
 
-tasks.withType(JavaCompile) {
+compileJava {
     source project(":Common").sourceSets.main.allJava
-}
-
-compileTestGroovy {
-    source sourceSets.main.allGroovy
-    source project(":Common").sourceSets.test.allGroovy
-}
-
-compileTestJava {
-    source sourceSets.main.allJava
-    source project(":Common").sourceSets.test.allJava
 }
 
 processResources {
@@ -89,8 +69,7 @@ processResources {
     exclude 'mods.groovy'
 }
 
-processTestResources {
-    from sourceSets.main.resources
+processTestmodResources {
     from project(':Common').sourceSets.test.resources
 }
 

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "dev.lukebemish.jsonwrangler",
+    "id": "jsonwrangler_testmod",
+    "version": "1.0.0",
+    "metadata": {
+      "name": "JsonWrangler Test Mod",
+      "license": "LGPL-3.0-or-later"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "load_type": "always"
+  }
+}
