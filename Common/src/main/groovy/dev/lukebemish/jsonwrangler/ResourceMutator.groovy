@@ -9,7 +9,9 @@ import dev.lukebemish.jsonwrangler.services.Services
 import groovy.transform.CompileStatic
 import io.github.groovymc.cgl.api.codec.ObjectOps
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.packs.resources.IoSupplier
 import net.minecraft.server.packs.resources.Resource
+import net.minecraft.server.packs.resources.ResourceMetadata
 import org.codehaus.groovy.control.CompilerConfiguration
 
 @CompileStatic
@@ -29,19 +31,38 @@ final class ResourceMutator {
 
     private ResourceMutator() {}
 
-    static Resource wrap(ResourceLocation location, Resource resource, List<Resource> scripts) {
+    static Resource wrap(Resource original, Resource meta, ResourceLocation scriptLocation, ResourceLocation metaScriptLocation, List<Resource> scripts, List<Resource> metaScripts) {
+        IoSupplier<InputStream> stream
         if (scripts.empty) {
-            return resource
-        }
-        return new Resource(resource.source(), {->
-            JsonElement json = GSON.fromJson(resource.openAsReader(), JsonElement.class)
-            try {
-                JsonElement mutated = mutateResource(location, json, scripts)
-                return new ByteArrayInputStream(GSON.toJson(mutated).bytes)
-            } catch (RuntimeException e) {
-                throw new IOException("Failed to mutate resource with script ${location}: ", e)
+            stream = ((ResourceAccessor)original).streamSupplier
+        } else {
+            stream = {->
+                JsonElement json = GSON.fromJson(original.openAsReader(), JsonElement.class)
+                try {
+                    JsonElement mutated = mutateResource(scriptLocation, json, scripts)
+                    return new ByteArrayInputStream(GSON.toJson(mutated).bytes)
+                } catch (RuntimeException e) {
+                    throw new IOException("Failed to mutate resource with script ${scriptLocation}: ", e)
+                }
             }
-        }, ((ResourceAccessor) resource).getMetadataSupplier())
+        }
+
+        IoSupplier<ResourceMetadata> metaStream
+        if (meta === null || metaScripts.empty) {
+            metaStream = ((ResourceAccessor)original).metadataSupplier
+        } else {
+            metaStream = {->
+                JsonElement json = GSON.fromJson(meta.openAsReader(), JsonElement.class)
+                try {
+                    JsonElement mutated = mutateResource(metaScriptLocation, json, metaScripts)
+                    return ResourceMetadata.fromJsonStream(new ByteArrayInputStream(GSON.toJson(mutated).bytes))
+                } catch (RuntimeException e) {
+                    throw new IOException("Failed to mutate resource with script ${scriptLocation}: ", e)
+                }
+            }
+        }
+
+        return new Resource(original.source(), stream, metaStream)
     }
 
     static JsonElement mutateResource(ResourceLocation location, JsonElement resource, List<Resource> scripts) {

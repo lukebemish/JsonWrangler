@@ -29,8 +29,6 @@ subprojects {
             url = 'https://maven.parchmentmc.org'
         }
         maven { url = "https://jitpack.io" }
-        // TODO: Publish stuff and remove this
-        mavenLocal()
     }
 
     tasks.withType(JavaCompile).configureEach {
