@@ -29,7 +29,8 @@ will run.
 ## Servers
 
 **Note:** As the groovy scripts that JsonWrangler loads can execute arbitrary code, JsonWrangler will not load scripts
-from server resource packs. If you wish to
+from server resource packs. If you wish to load scripts from a server resource pack, you will have to copy it as a local
+resource pack first.
 
 ## Examples
 
