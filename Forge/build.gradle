@@ -145,7 +145,7 @@ if (project.hasProperty("curseforge_key")) {
             releaseType = "${project.release_type}"
             addGameVersion libs.versions.minecraft.get()
             addGameVersion 'Forge'
-            mainArtifact(jar) {
+            mainArtifact(tasks.jarJar) {
                 displayName = "JsonWrangler [Forge] v$project.version"
             }
             relations {
@@ -165,7 +165,7 @@ if (project.hasProperty("modrinth_key")) {
         versionNumber = "$project.version"
         versionType = "${project.release_type}"
         detectLoaders = false
-        uploadFile = jar
+        uploadFile = tasks.jarJar
         gameVersions = [libs.versions.minecraft.get()]
         loaders = ['forge']
         dependencies {
