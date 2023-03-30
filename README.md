@@ -25,3 +25,14 @@ variables at your disposal inside your script:
 Multiple scripts in different datapacks or resource packs can target the same file - they are ran in order from highest
 priority (the "top" pack) to lowest priority (the "bottom" pack). If a script calls `override()`, no further scripts
 will run.
+
+## Examples
+
+### Changing the texture of an item
+Placing the following file at `assets/minecraft/models/item/apple.json.groovy` will change the texture of the apple to
+use the potato texture:
+```groovy
+json?.textures?.layer0 = 'minecraft:item/potato'
+
+return json
+```
