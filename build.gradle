@@ -19,6 +19,7 @@ subprojects {
 
     license {
         rule rootProject.file('header.txt')
+        exclude '**/*.mcmeta'
     }
 
     repositories {

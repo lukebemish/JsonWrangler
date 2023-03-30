@@ -28,7 +28,7 @@ loom {
             server()
             setConfigName("Quilt Server")
             ideConfigGenerated(true)
-            runDir("run")
+            runDir("run-server")
             source sourceSets.testmod
         }
     }

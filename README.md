@@ -26,6 +26,11 @@ Multiple scripts in different datapacks or resource packs can target the same fi
 priority (the "top" pack) to lowest priority (the "bottom" pack). If a script calls `override()`, no further scripts
 will run.
 
+## Servers
+
+**Note:** As the groovy scripts that JsonWrangler loads can execute arbitrary code, JsonWrangler will not load scripts
+from server resource packs. If you wish to
+
 ## Examples
 
 ### Changing the texture of an item
