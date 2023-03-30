@@ -148,6 +148,9 @@ if (project.hasProperty("curseforge_key")) {
             mainArtifact(jar) {
                 displayName = "JsonWrangler [Forge] v$project.version"
             }
+            relations {
+                requiredDependency 'gml'
+            }
         }
         options {
             forgeGradleIntegration = true
@@ -165,5 +168,9 @@ if (project.hasProperty("modrinth_key")) {
         uploadFile = jar
         gameVersions = [libs.versions.minecraft.get()]
         loaders = ['forge']
+        dependencies {
+            // not on modrinth yet:
+            //required.project 'gml'
+        }
     }
 }

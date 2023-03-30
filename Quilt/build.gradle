@@ -98,6 +98,10 @@ if (project.hasProperty("curseforge_key")) {
             mainArtifact(remapJar) {
                 displayName = "JsonWrangler [Quilt] v$project.version"
             }
+            relations {
+                requiredDependency 'groovyduvet'
+                requiredDependency 'qsl'
+            }
         }
         options {
             forgeGradleIntegration = true
@@ -115,5 +119,9 @@ if (project.hasProperty("modrinth_key")) {
         uploadFile = remapJar
         gameVersions = [libs.versions.minecraft.get()]
         loaders = ['quilt']
+        dependencies {
+            required.project 'groovyduvet'
+            required.project 'qsl'
+        }
     }
 }
