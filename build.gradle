@@ -1,6 +1,7 @@
 plugins {
     alias libs.plugins.mdg
     alias libs.plugins.quilt.loom apply false
+    alias libs.plugins.quilt.licenser apply false
 }
 
 modsDotGroovy {
@@ -11,9 +12,14 @@ modsDotGroovy {
 subprojects {
     apply plugin: 'groovy'
     apply plugin: 'maven-publish'
+    apply plugin: libs.plugins.quilt.licenser.get().pluginId
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
+
+    license {
+        rule rootProject.file('header.txt')
+    }
 
     repositories {
         mavenCentral()
