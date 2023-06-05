@@ -18,7 +18,7 @@ ModsDotGroovy.make {
         intermediate_mappings = 'net.fabricmc:intermediary'
         displayUrl = 'https://github.com/lukebemish/JsonWrangler'
 
-        description = "Adds modularly defined metals"
+        description = "Wrangle your JSON with ease, with groovyscripts to modify data embedded in data/resource packs"
         authors = [this.buildProperties['mod_author'] as String]
 
         dependencies {
