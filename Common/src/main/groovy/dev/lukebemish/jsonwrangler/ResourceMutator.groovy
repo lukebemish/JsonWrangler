@@ -13,7 +13,7 @@ import com.mojang.serialization.JsonOps
 import dev.lukebemish.jsonwrangler.mixin.ResourceAccessor
 import dev.lukebemish.jsonwrangler.services.Services
 import groovy.transform.CompileStatic
-import io.github.groovymc.cgl.api.codec.ObjectOps
+import org.groovymc.cgl.api.codec.ObjectOps
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.IoSupplier
 import net.minecraft.server.packs.resources.Resource

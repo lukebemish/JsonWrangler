@@ -15,7 +15,9 @@ ModsDotGroovy.make {
         displayName = this.buildProperties['mod_name']
         version = this.version
         group = this.group
-        intermediate_mappings = 'net.fabricmc:intermediary'
+        onQuilt {
+            intermediate_mappings = 'net.fabricmc:intermediary'
+        }
         displayUrl = 'https://github.com/lukebemish/JsonWrangler'
 
         description = "Wrangle your JSON with ease, with groovyscripts to modify data embedded in data/resource packs"
@@ -35,7 +37,7 @@ ModsDotGroovy.make {
 
             onQuilt {
                 mod('groovyduvet') {
-                    versionRange = ">=${this.libs.versions.groovyduvet}"
+                    versionRange = ">=${this.libs.versions.groovyduvet.all}"
                 }
             }
 

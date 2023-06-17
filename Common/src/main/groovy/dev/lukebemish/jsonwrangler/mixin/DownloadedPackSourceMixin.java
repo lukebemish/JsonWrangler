@@ -16,11 +16,12 @@ import net.minecraft.server.packs.FilePackResources;
 @Mixin(DownloadedPackSource.class)
 public class DownloadedPackSourceMixin {
     @ModifyExpressionValue(
-        method = {"method_4637", "lambda$setServerPack$8"},
+        method = {"method_4637", "lambda$setServerPack$8", "m_254765_"},
         at = @At(
             value = "NEW",
             target = "net/minecraft/server/packs/FilePackResources"
-        )
+        ),
+        require = 1
     )
     private static FilePackResources jsonwrangler$modifyFilePackResources(FilePackResources old) {
         ((CanBeServerSource) old).jsonwrangler$setServerSource();

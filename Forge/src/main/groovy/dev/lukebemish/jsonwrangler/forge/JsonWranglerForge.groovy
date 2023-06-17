@@ -5,7 +5,7 @@
 
 package dev.lukebemish.jsonwrangler.forge
 
-import com.matyrobbrt.gml.GMod
+import org.groovymc.gml.GMod
 import dev.lukebemish.jsonwrangler.Constants
 import dev.lukebemish.jsonwrangler.JsonWranglerCommon
 import groovy.transform.CompileStatic

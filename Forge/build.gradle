@@ -6,7 +6,7 @@ plugins {
     alias libs.plugins.minotaur
 }
 
-archivesBaseName = "${mod_id}-${libs.versions.minecraft.get()}-forge"
+base.archivesName = "${mod_id}-forge-${libs.versions.minecraft.get()}"
 
 minecraft {
     mappings channel: 'parchment', version: "${libs.versions.parchment.minecraft.get()}-${libs.versions.parchment.mappings.get()}-${libs.versions.minecraft.get()}"
@@ -73,18 +73,21 @@ dependencies {
     minecraft libs.forge
 
     implementation(annotationProcessor(libs.mixinextras.common.get()))
-    implementation(jarJar(libs.mixinextras.forge.get())) {
+
+    implementation(libs.mixinextras.forge.get())
+
+    jarJar(libs.mixinextras.forge.get()) {
         jarJar.ranged(it, "[${libs.versions.mixinextras.get()},)")
     }
 
-    annotationProcessor "org.spongepowered:mixin:${libs.versions.mixin.get()}:processor"
+    annotationProcessor(variantOf(libs.mixin) { classifier 'processor' })
 
-    implementation fg.deobf(libs.cgl.forge.get())
-
-    compileOnly "com.matyrobbrt.gml:gml:${libs.versions.gml.get()}:all"
-    runtimeOnly(fg.deobf("com.matyrobbrt.gml:gml:${libs.versions.gml.get()}:all")) {
+    compileOnly(variantOf(libs.gml) { classifier 'all' })
+    runtimeOnly(fg.deobf(variantOf(libs.gml) { classifier 'all' }.get())) {
         exclude module: 'transform'
     }
+
+    compileOnly fg.deobf(libs.cgl.forge.get())
 
     compileOnly project(path: ":Common", configuration: "namedElements")
     testCompileOnly project(path: ':Common', configuration: 'testOut')
@@ -111,7 +114,7 @@ processResources {
 }
 
 jar {
-    classifier 'partial'
+    archiveClassifier = 'partial'
     finalizedBy('reobfJar')
 }
 
@@ -122,24 +125,21 @@ reobf {
 }
 
 tasks.jarJar {
-    classifier ''
+    archiveClassifier = ''
     finalizedBy tasks.reobfJarJar
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId = project.group
-            artifactId = "${mod_id}-${libs.versions.minecraft.get()}-forge"
-            version = project.version
             artifacts = [tasks.jarJar, sourcesJar]
         }
     }
 }
 
-if (project.hasProperty("curseforge_key")) {
+if (System.getenv('CURSEFORGE_KEY')) {
     curseforge {
-        apiKey = project.curseforge_key
+        apiKey = System.getenv('CURSEFORGE_KEY')
         project {
             id = '843930'
             releaseType = "${project.release_type}"
@@ -158,9 +158,9 @@ if (project.hasProperty("curseforge_key")) {
     }
 }
 
-if (project.hasProperty("modrinth_key")) {
+if (System.getenv('MODRINTH_KEY')) {
     modrinth {
-        token = project.modrinth_key
+        token = System.getenv('MODRINTH_KEY')
         projectId = 'XodEFO40'
         versionNumber = "$project.version"
         versionType = "${project.release_type}"
@@ -169,8 +169,7 @@ if (project.hasProperty("modrinth_key")) {
         gameVersions = [libs.versions.minecraft.get()]
         loaders = ['forge']
         dependencies {
-            // not on modrinth yet:
-            //required.project 'gml'
+            required.project 'gml'
         }
     }
 }

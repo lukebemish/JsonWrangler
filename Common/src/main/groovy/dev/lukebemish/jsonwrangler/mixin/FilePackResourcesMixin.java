@@ -30,7 +30,8 @@ public class FilePackResourcesMixin implements CanBeServerSource {
 
     @ModifyReturnValue(
         method = "getResource(Ljava/lang/String;)Lnet/minecraft/server/packs/resources/IoSupplier;",
-        at = @At("RETURN")
+        at = @At("RETURN"),
+        require = 1
     )
     private IoSupplier<InputStream> jsonwrangler$getResource(IoSupplier<InputStream> old, String resourcePath) {
         if (this.jsonwrangler$serverSource && resourcePath.endsWith(".groovy")) {
@@ -49,11 +50,12 @@ public class FilePackResourcesMixin implements CanBeServerSource {
     }
 
     @WrapOperation(
-        method = "listResources",
+        method = "listResources(Lnet/minecraft/server/packs/PackType;Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/server/packs/PackResources$ResourceOutput;)V",
         at = @At(
             value = "INVOKE",
             target ="Lnet/minecraft/server/packs/PackResources$ResourceOutput;accept(Ljava/lang/Object;Ljava/lang/Object;)V"
-        )
+        ),
+        require = 1
     )
     private void jsonwrangler$listResources(PackResources.ResourceOutput output, Object objLocation, Object objIoSupplier, Operation<Void> operation) {
         var location = (ResourceLocation) objLocation;
