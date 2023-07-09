@@ -5,13 +5,10 @@
 
 package dev.lukebemish.jsonwrangler.forge
 
-import dev.lukebemish.jsonwrangler.JsonWranglerClient
-import net.minecraftforge.api.distmarker.Dist
-import net.minecraftforge.fml.loading.FMLEnvironment
-import org.groovymc.gml.GMod
 import dev.lukebemish.jsonwrangler.Constants
 import dev.lukebemish.jsonwrangler.JsonWranglerCommon
 import groovy.transform.CompileStatic
+import org.groovymc.gml.GMod
 
 @GMod(Constants.MOD_ID)
 @CompileStatic

@@ -7,13 +7,11 @@ package dev.lukebemish.jsonwrangler.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.lukebemish.jsonwrangler.CanBeServerSource;
-import dev.lukebemish.jsonwrangler.JsonWranglerCommon;
 import dev.lukebemish.jsonwrangler.MixinStatuses;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import net.minecraft.client.resources.DownloadedPackSource;
 import net.minecraft.server.packs.FilePackResources;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 

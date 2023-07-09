@@ -5,11 +5,9 @@
 
 package dev.lukebemish.jsonwrangler
 
-
 import dev.lukebemish.jsonwrangler.services.IPlatformHelper
 import dev.lukebemish.jsonwrangler.services.Services
 import groovy.transform.CompileStatic
-import net.minecraft.client.resources.DownloadedPackSource
 import net.minecraft.server.packs.FilePackResources
 
 @CompileStatic
