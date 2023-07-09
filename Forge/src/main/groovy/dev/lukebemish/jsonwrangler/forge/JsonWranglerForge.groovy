@@ -18,9 +18,5 @@ import groovy.transform.CompileStatic
 class JsonWranglerForge {
     JsonWranglerForge() {
         JsonWranglerCommon.init()
-
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            JsonWranglerClient.init()
-        }
     }
 }

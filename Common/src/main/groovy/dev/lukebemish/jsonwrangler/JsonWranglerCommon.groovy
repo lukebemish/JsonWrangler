@@ -20,6 +20,9 @@ final class JsonWranglerCommon {
 
     static void init() {
         MixinStatuses.setupNecessaryMixins(NECESSARY_MIXIN_TARGETS)
+        if (Services.PLATFORM.client) {
+            JsonWranglerClient.init()
+        }
     }
 
     static final Map sharedEnvMap = Collections.unmodifiableMap(['platform':switch (Services.PLATFORM.platform) {
