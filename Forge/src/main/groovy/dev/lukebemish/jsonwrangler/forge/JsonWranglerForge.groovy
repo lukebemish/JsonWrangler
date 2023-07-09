@@ -5,6 +5,9 @@
 
 package dev.lukebemish.jsonwrangler.forge
 
+import dev.lukebemish.jsonwrangler.JsonWranglerClient
+import net.minecraftforge.api.distmarker.Dist
+import net.minecraftforge.fml.loading.FMLEnvironment
 import org.groovymc.gml.GMod
 import dev.lukebemish.jsonwrangler.Constants
 import dev.lukebemish.jsonwrangler.JsonWranglerCommon
@@ -15,5 +18,9 @@ import groovy.transform.CompileStatic
 class JsonWranglerForge {
     JsonWranglerForge() {
         JsonWranglerCommon.init()
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            JsonWranglerClient.init()
+        }
     }
 }
