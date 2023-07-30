@@ -82,22 +82,20 @@ final class ResourceMutator {
         for (int i = scripts.size() - 1; i >= 0; i--) {
             Resource script = scripts[i]
             try (var reader = script.openAsReader()) {
-                String firstLine = reader.readLine()
-                if (firstLine != null && firstLine.startsWith(SERVER_SCRIPT)) {
+                String contents = reader.text
+                if (contents.contains(SERVER_SCRIPT)) {
                     continue
                 }
-                try (var scriptReader = new SequenceReader(new StringReader(firstLine+'\n'), reader)) {
-                    Map props = [
-                        'json'    : json,
-                        'override': override,
-                    ]
-                    props += JsonWranglerCommon.sharedEnvMap
-                    Binding binding = new Binding(props)
-                    GroovyShell shell = new GroovyShell(ResourceMutator.classLoader, binding, COMPILER_CONFIGURATION)
-                    json = shell.evaluate(scriptReader)
-                    if (override.override) {
-                        break
-                    }
+                Map props = [
+                    'json'    : json,
+                    'override': override,
+                ]
+                props += JsonWranglerCommon.sharedEnvMap
+                Binding binding = new Binding(props)
+                GroovyShell shell = new GroovyShell(ResourceMutator.classLoader, binding, COMPILER_CONFIGURATION)
+                json = shell.evaluate(contents)
+                if (override.override) {
+                    break
                 }
             }
         }
